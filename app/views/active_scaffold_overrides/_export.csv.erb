@@ -12,9 +12,8 @@
   data = csv_lib.generate(fcsv_options) do |csv|
     csv << fcsv_options[:headers] unless params[:skip_header] == 'true'
     @records.each do |record|
-      csv << @export_columns.collect { |column|
-        get_export_column_value(record, column)
-      }
+      row = @export_columns.collect { |column| get_export_column_value(record, column) }
+      csv << row if row.join(',').match(/^(-#{params[:delimiter]}?)+$/).nil?
     end
   end
 -%><%= data.html_safe -%>
